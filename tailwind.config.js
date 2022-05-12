@@ -1,19 +1,18 @@
 module.exports = {
   mode: 'jit',
-  purge: ['./index.html', './src/**/*.{js,jsx,ts,tsx,vue}'],
-  darkMode: false, // or 'media' or 'class'
+  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   theme: {
     fontFamily: {
       sans: ['Avenir', 'Helvetica', 'Arial', 'sans-serif'],
+      lato: ['Lato', 'sans-serif'],
     },
     extend: {
-      textColor: {
-        default: '#2c3e50',
-        link: '#42b983',
-        code: '#304455',
-      },
-      backgroundColor: {
-        code: '#eeeeee',
+      colors: {
+        primary: {
+          default: '#e73643',
+          light: '#ec5e69',
+          dark: '#b92b36',
+        },
       },
     },
   },
@@ -21,4 +20,4 @@ module.exports = {
     extend: {},
   },
   plugins: [],
-}
+};

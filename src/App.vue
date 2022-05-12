@@ -1,16 +1,11 @@
 <script setup lang="ts">
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from './components/HelloWorld.vue'
+  import { ref } from 'vue';
+  import AppHeader from '@/components/AppHeader.vue';
+
+  const search = ref('');
 </script>
 
 <template>
-  <img class="mx-auto" alt="Vue logo" src="@/assets/logo.png" />
-  <HelloWorld msg="Hello Vue 3 + TypeScript + Vite + TailwindCSS" />
+  <AppHeader v-model:search="search" />
+  <router-view></router-view>
 </template>
-
-<style>
-#app {
-  @apply antialiased text-center text-default m-16;
-}
-</style>
