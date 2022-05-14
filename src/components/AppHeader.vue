@@ -4,14 +4,37 @@
       <figure class="h-full w-16">
         <img class="h-full w-auto" src="@/assets/logo.png" alt="moVi" />
       </figure>
-      <div class="hidden max-w-[640px] md:block md:w-[440px] lg:w-[640px]">
+      <div class="relative hidden max-w-[640px] md:block md:w-[440px] lg:w-[640px]">
         <input
-          :value="search"
+          v-model="search"
           class="mt-1 block w-full rounded-md border border-slate-300 bg-slate-100 px-3 py-2 placeholder-slate-500 shadow-sm placeholder:capitalize focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:text-sm"
           placeholder="fantastic beasts"
           type="text"
-          @input="$emit('update:search', $event.target.value)"
         />
+        <div
+          class="absolute -bottom-5 left-0 max-h-96 w-full translate-y-full overflow-y-auto bg-indigo-200"
+        >
+          <template v-if="movieList">
+            <div
+              v-for="item in movieList"
+              :key="item.id"
+              class="flex cursor-pointer items-center justify-start space-x-4 px-2 py-3"
+              @click="navigateToMedia(item.id, item.original_title)"
+            >
+              <figure class="w-8">
+                <img class="h-auto w-full" :src="imgBaseUrl + item.poster_path" />
+              </figure>
+              <span class="font-raleway text-base font-bold uppercase">
+                {{ item.original_title }}
+              </span>
+            </div>
+          </template>
+          <template v-else>
+            <div v-for="item in tvList" :key="item.id" class="px-2 py-2">
+              {{ item.original_name }}
+            </div>
+          </template>
+        </div>
       </div>
       <TransitionRoot
         appear
@@ -26,12 +49,12 @@
       >
         <div class="fixed top-[81px] left-0 w-full bg-black px-2 py-4 text-white">
           <input
-            :value="search"
+            v-model="search"
             class="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 placeholder-slate-500 shadow-sm placeholder:text-center placeholder:capitalize focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:text-sm md:hidden"
             placeholder="fantastic beasts"
             type="text"
-            @input="$emit('update:search', $event.target.value)"
           />
+          <div class="absolute"></div>
           <div class="mt-4 flex flex-col items-center space-y-2 md:mt-0">
             <router-link
               to="/"
@@ -108,19 +131,50 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, defineProps, defineEmits } from 'vue';
+  import { computed, ref, watch } from 'vue';
+  import { useRoute, useRouter } from 'vue-router';
   import { TransitionRoot } from '@headlessui/vue';
+  import { searchStore } from '@/store/Base';
 
-  defineProps({
-    search: {
-      type: String,
-      default: '',
-    },
-  });
-  defineEmits(['update:search']);
+  const store = searchStore();
+  const route = useRoute();
+  const router = useRouter();
 
   const activeMenu = ref(false);
-  const inputVal = ref('');
+  const search = ref('');
+  const imgBaseUrl = computed(() => import.meta.env.VITE_IMAGE_URL);
+
+  const type = computed(() => {
+    const { name } = route;
+    return name === 'Movie' ? 'movie' : 'tv';
+  });
+
+  const movieList = computed(() => {
+    return store.movies;
+  });
+  const tvList = computed(() => {
+    return store.tv;
+  });
+
+  function navigateToMedia(id: number, name: string) {
+    search.value = name;
+    router.push({ name: 'Media', params: { id } });
+    type.value === 'movie' ? (store.movies = null) : (store.tv = null);
+  }
+
+  //watch search value and call function after delay
+  watch(search, (value) => {
+    if (value.length > 2) {
+      setTimeout(() => {
+        const typeQuery = type.value + '?';
+        const data = {
+          searchKey: value,
+          type: typeQuery,
+        };
+        store.search(data);
+      }, 500);
+    }
+  });
 </script>
 
 <style scoped>
