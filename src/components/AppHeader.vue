@@ -134,7 +134,7 @@
   import { computed, ref, watch } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
   import { TransitionRoot } from '@headlessui/vue';
-  import { searchStore } from '@/store/Base';
+  import { searchStore } from '@/store/Search';
 
   const store = searchStore();
   const route = useRoute();
