@@ -5,6 +5,7 @@ module.exports = {
     fontFamily: {
       sans: ['Avenir', 'Helvetica', 'Arial', 'sans-serif'],
       lato: ['Lato', 'sans-serif'],
+      raleway: ['Raleway', 'sans-serif'],
     },
     extend: {
       colors: {
