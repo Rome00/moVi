@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     fontFamily: {
       sans: ['Avenir', 'Helvetica', 'Arial', 'sans-serif'],
-      lato: ['Lato', 'sans-serif'],
+      barlow: ['Barlow Condensed', 'sans-serif'],
       raleway: ['Raleway', 'sans-serif'],
     },
     extend: {

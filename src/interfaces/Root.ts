@@ -58,3 +58,25 @@ export interface SearchResult {
   movies: BaseMovie[] | null;
   tv: BaseTv[] | null;
 }
+
+export interface MovieList {
+  genres: Genre[];
+  movies: BaseMovie[];
+}
+export interface TvList {
+  genres: Genre[];
+  series: BaseTv[];
+}
+export interface pageInfo {
+  page: number;
+  total_pages: number;
+  total_results: number;
+}
+
+export interface Slide {
+  id: number;
+  overview: string;
+  vote_average: number;
+  title: string;
+  backdrop_path: string;
+}
