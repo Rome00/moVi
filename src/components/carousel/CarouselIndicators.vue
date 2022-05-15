@@ -6,7 +6,7 @@
       v-for="(item, index) in total"
       :key="index"
       class="h-1.5 w-6 cursor-pointer border-none bg-white/50"
-      :class="{ active: currentIndex === index }"
+      :class="{ 'active-slide': currentIndex === index }"
       @click="$emit('switch', index)"
     ></button>
   </div>

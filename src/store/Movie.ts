@@ -23,6 +23,8 @@ export const MovieStore = defineStore('MovieStore', {
         });
     },
     async getMovies(page: number) {
+      const pageInfo = pagination();
+      pageInfo.loading = true;
       await axios
         .get(
           import.meta.env.VITE_API_BASE_URL +
@@ -32,11 +34,11 @@ export const MovieStore = defineStore('MovieStore', {
             page
         )
         .then((result) => {
-          const pageInfo = pagination();
           pageInfo.page = page;
           pageInfo.total_pages = result.data.total_pages;
           pageInfo.total_results = result.data.total_results;
           this.movies = result.data.results;
+          pageInfo.loading = false;
         });
     },
   },

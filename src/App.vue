@@ -1,13 +1,15 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
   import AppHeader from '@/components/shared/AppHeader.vue';
   import AppFooter from '@/components/shared/AppFooter.vue';
+  import AppLoader from './components/AppLoader.vue';
+  import { pagination } from '@/store/PageInfo';
 
-  const search = ref('');
+  const pageInfo = pagination();
 </script>
 
 <template>
-  <AppHeader v-model:search="search" />
-  <router-view></router-view>
+  <AppHeader />
+  <router-view v-show="!pageInfo.loadingState"></router-view>
+  <AppLoader v-show="pageInfo.loadingState" />
   <AppFooter />
 </template>

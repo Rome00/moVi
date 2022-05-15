@@ -16,7 +16,8 @@
       @mouseout="$emit('mouseout')"
     >
       <div
-        class="relative h-full bg-cover bg-center bg-no-repeat"
+        class="bg-position relative h-full bg-cover bg-no-repeat"
+        :class="computedBgClass"
         :style="{
           backgroundImage: 'url(' + imageUrl + slide.backdrop_path + ')',
         }"
@@ -70,6 +71,7 @@
 <script lang="ts">
   import { computed, defineComponent, PropType } from 'vue';
   import { TransitionRoot } from '@headlessui/vue';
+  import { useRoute } from 'vue-router';
   import { Slide } from '@/interfaces/Root';
 
   export default defineComponent({
@@ -94,6 +96,7 @@
     },
     emits: ['mouseenter', 'mouseout'],
     setup(props) {
+      const route = useRoute();
       const imageUrl = import.meta.env.VITE_IMAGE_URL + 'w1280';
       const transitionEffect = computed(() => {
         return props.direction === 'right' ? 'slide-out' : 'slide-in';
@@ -105,9 +108,13 @@
         }
         return str;
       };
+      const computedBgClass = computed(() =>
+        route.name === 'Movie' ? 'bg-center' : 'bg-top'
+      );
 
       return {
         imageUrl,
+        computedBgClass,
         transitionEffect,
 
         // methods
@@ -116,5 +123,3 @@
     },
   });
 </script>
-
-<style scoped></style>

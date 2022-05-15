@@ -1,9 +1,9 @@
 <template>
   <header class="flex w-full bg-black shadow-md">
     <nav class="relative flex h-20 w-full items-center justify-between px-10">
-      <router-link v-slot="{ navigate }" to="/">
-        <figure class="h-full w-16" @click="navigate">
-          <img class="h-full w-auto" src="@/assets/logo.png" alt="moVi" />
+      <router-link v-slot="{ navigate }" class="flex h-full items-center" to="/">
+        <figure class="flex h-full w-16 items-center" @click="navigate">
+          <img class="h-auto w-full" src="@/assets/logo.png" alt="moVi" />
         </figure>
       </router-link>
       <div class="relative hidden max-w-[640px] md:block md:w-[440px] lg:w-[640px]">
@@ -14,7 +14,7 @@
           type="text"
         />
         <div
-          class="absolute -bottom-5 left-0 max-h-96 w-full translate-y-full overflow-y-auto bg-gray-200"
+          class="absolute -bottom-5 left-0 z-50 max-h-96 w-full translate-y-full overflow-y-auto bg-gray-200"
         >
           <template v-if="movieList">
             <div
@@ -40,6 +40,9 @@
               class="group flex cursor-pointer items-center justify-start space-x-4 from-primary-default to-indigo-400 px-2 py-3 hover:bg-gradient-to-tr"
               @click="navigateToMedia(item.id, item.original_name)"
             >
+              <figure class="w-8">
+                <img class="h-auto w-full" :src="imgBaseUrl + item.poster_path" />
+              </figure>
               <span
                 class="select-none font-raleway text-base font-bold uppercase group-hover:text-white"
               >
@@ -60,7 +63,7 @@
         leave-from="transform opacity-100 scale-100"
         leave-to="transform opacity-0 scale-95"
       >
-        <div class="fixed  z-50 top-[80px] left-0 w-full bg-black px-2 py-4 text-white">
+        <div class="absolute top-[80px] left-0 z-50 w-full bg-black px-2 py-4 text-white">
           <input
             v-model="search"
             class="mt-1 block w-full rounded-md border border-slate-300 bg-slate-100 px-3 py-2 font-raleway font-medium text-slate-900 placeholder-slate-500 shadow-sm placeholder:capitalize focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500 sm:text-sm md:hidden"
@@ -76,13 +79,15 @@
                 <div
                   v-for="item in movieList"
                   :key="item.id"
-                  class="flex cursor-pointer items-center justify-start space-x-4 px-2 py-3"
+                  class="group flex cursor-pointer items-center justify-start space-x-4 from-primary-default to-indigo-400 px-2 py-3 hover:bg-gradient-to-tr"
                   @click="navigateToMedia(item.id, item.original_title)"
                 >
                   <figure class="w-8">
                     <img class="h-auto w-full" :src="imgBaseUrl + item.poster_path" />
                   </figure>
-                  <span class="font-raleway text-base font-bold uppercase">
+                  <span
+                    class="select-none font-raleway text-base font-bold uppercase text-black group-hover:text-white"
+                  >
                     {{ item.original_title }}
                   </span>
                 </div>
@@ -91,18 +96,20 @@
                 <div
                   v-for="item in tvList"
                   :key="item.id"
-                  class="flex cursor-pointer items-center justify-start space-x-4 px-2 py-3"
+                  class="group flex cursor-pointer items-center justify-start space-x-4 from-primary-default to-indigo-400 px-2 py-3 hover:bg-gradient-to-tr"
                   @click="navigateToMedia(item.id, item.original_name)"
                 >
-                  <span class="font-raleway text-base font-bold uppercase">
+                  <span
+                    class="select-none font-raleway text-base font-bold uppercase text-black group-hover:text-white"
+                  >
                     {{ item.original_name }}
                   </span>
                 </div>
               </template>
             </div>
-            <router-link
-              to="/"
+            <button
               class="flex w-full justify-center py-4 text-center font-medium transition-colors duration-200 hover:bg-slate-600/50 hover:text-primary-light"
+              @click="loadRoute('/')"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -121,10 +128,10 @@
               <span class="pl-2 font-raleway text-lg font-bold uppercase md:text-xl">
                 movies
               </span>
-            </router-link>
-            <router-link
-              to="/series"
+            </button>
+            <button
               class="flex w-full justify-center py-4 text-center font-medium transition-colors duration-200 hover:bg-slate-600/50 hover:text-primary-light"
+              @click="loadRoute('/series')"
             >
               <svg
                 version="1.1"
@@ -151,7 +158,7 @@
               <span class="pl-2 font-raleway text-lg font-bold uppercase md:text-xl">
                 tv show
               </span>
-            </router-link>
+            </button>
           </div>
         </div>
       </TransitionRoot>
@@ -186,7 +193,7 @@
 
   const activeMenu = ref(false);
   const search = ref('');
-  const imgBaseUrl = computed(() => import.meta.env.VITE_IMAGE_URL);
+  const imgBaseUrl = computed(() => import.meta.env.VITE_IMAGE_URL + 'w92');
 
   const type = computed(() => {
     const { name } = route;
@@ -204,6 +211,12 @@
     activeMenu.value = !activeMenu.value;
     store.movies = null;
     store.tv = null;
+  }
+
+  function loadRoute(route: string) {
+    console.log(route);
+    router.push({ path: route });
+    activeMenu.value = false;
   }
 
   function navigateToMedia(id: number, name: string) {

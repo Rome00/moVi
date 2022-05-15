@@ -6,3 +6,11 @@
 .dots {
   @apply absolute block h-[5px] w-[5px] rounded-[50%] bg-white transition-all duration-300 hover:scale-125;
 }
+
+.active-slide {
+  @apply bg-primary-default
+}
+
+.spin-after {
+  @apply after:absolute after:left-0 after:top-0 after:h-14 after:w-14 after:animate-spin-slow after:rounded-[50%] after:border-l-4 after:border-b-4 after:border-l-primary-default after:border-b-transparent;
+}

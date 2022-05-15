@@ -71,6 +71,7 @@ export interface pageInfo {
   page: number;
   total_pages: number;
   total_results: number;
+  loading: boolean;
 }
 
 export interface Slide {

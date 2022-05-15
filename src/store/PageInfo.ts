@@ -4,6 +4,7 @@ import { pageInfo } from '@/interfaces/Root';
 export const pagination = defineStore('pagination', {
   state: () =>
     ({
+      loading: true,
       page: 1,
       total_pages: null,
       total_results: null,
@@ -11,6 +12,7 @@ export const pagination = defineStore('pagination', {
   getters: {
     fromStart: (state) => (state.page - 1) * 20,
     toEnd: (state) => (state.page - 1) * 20 + 20,
+    loadingState: (state) => state.loading,
     activePageSection() {
       const pageList: number[] = [];
       const start: number = this.page - 3;
