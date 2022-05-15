@@ -30,8 +30,15 @@
             </div>
           </template>
           <template v-else>
-            <div v-for="item in tvList" :key="item.id" class="px-2 py-2">
-              {{ item.original_name }}
+            <div
+              v-for="item in tvList"
+              :key="item.id"
+              class="flex cursor-pointer items-center justify-start space-x-4 px-2 py-3"
+              @click="navigateToMedia(item.id, item.original_name)"
+            >
+              <span class="font-raleway text-base font-bold uppercase">
+                {{ item.original_name }}
+              </span>
             </div>
           </template>
         </div>
