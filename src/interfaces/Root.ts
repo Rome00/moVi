@@ -31,7 +31,7 @@ export interface Crew {
   department: string;
   job: string;
 }
-interface Media {
+export interface Media {
   aspect_ratio: number;
   height: number;
   iso_639_1: string;

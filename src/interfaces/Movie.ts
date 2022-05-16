@@ -31,7 +31,7 @@ interface BelongsToCollection {
   backdrop_path: string;
 }
 
-interface Cast {
+export interface MovieCast {
   adult: boolean;
   gender: number;
   id: number;
@@ -47,15 +47,15 @@ interface Cast {
 }
 
 interface Credits {
-  cast: Cast[];
+  cast: MovieCast[];
   crew: Crew[];
 }
 
-export interface ReleaseDates {
-  results: Result[];
+interface ReleaseDates {
+  results: ContentResult[];
 }
 
-export interface Result {
+export interface ContentResult {
   iso_3166_1: string;
   release_dates: ReleaseDate[];
 }

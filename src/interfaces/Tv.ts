@@ -55,7 +55,7 @@ interface Season {
   season_number: number;
 }
 
-interface ContentRating {
+export interface ContentRating {
   iso_3166_1: string;
   rating: string;
 }
@@ -64,7 +64,7 @@ interface ContentRatings {
   results: ContentRating[];
 }
 
-interface Cast {
+export interface TvCast {
   adult: boolean;
   gender: number;
   id: number;
@@ -79,7 +79,7 @@ interface Cast {
 }
 
 interface Credits {
-  cast: Cast[];
+  cast: TvCast[];
   crew: Crew[];
 }
 
