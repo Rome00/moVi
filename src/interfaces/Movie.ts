@@ -51,7 +51,24 @@ interface Credits {
   crew: Crew[];
 }
 
-export interface RootObject {
+export interface ReleaseDates {
+  results: Result[];
+}
+
+export interface Result {
+  iso_3166_1: string;
+  release_dates: ReleaseDate[];
+}
+
+export interface ReleaseDate {
+  certification: string;
+  iso_639_1?: string;
+  note?: string;
+  release_date: string;
+  type: number;
+}
+
+export interface MovieItem {
   adult: boolean;
   backdrop_path: string;
   belongs_to_collection: BelongsToCollection;
@@ -77,6 +94,7 @@ export interface RootObject {
   video: boolean;
   vote_average: number;
   vote_count: number;
+  release_dates: ReleaseDates;
   credits: Credits;
   images: Images;
 }

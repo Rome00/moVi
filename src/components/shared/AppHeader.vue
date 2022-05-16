@@ -197,7 +197,7 @@
 
   const type = computed(() => {
     const { name } = route;
-    return name === 'Movie' ? 'movie' : 'tv';
+    return name === 'movie' ? 'movie' : 'tv';
   });
 
   const movieList = computed(() => {
@@ -221,7 +221,7 @@
 
   function navigateToMedia(id: number, name: string) {
     search.value = name;
-    router.push({ name: 'Media', params: { id } });
+    router.push({ name: 'media', params: { id, media: route.name as string } });
     store.movies = null;
     store.tv = null;
   }

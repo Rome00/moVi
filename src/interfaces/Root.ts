@@ -1,5 +1,5 @@
-import { BaseTv } from './Tv';
-import { BaseMovie } from './Movie';
+import { BaseTv, TvSeriesItem } from './Tv';
+import { BaseMovie, MovieItem } from './Movie';
 
 // shared interface
 export interface ProductionNetwork {
@@ -8,6 +8,7 @@ export interface ProductionNetwork {
   logo_path: string;
   origin_country: string;
 }
+
 export interface ProductionCountry {
   iso_3166_1: string;
   name: string;
@@ -54,11 +55,18 @@ export interface GenreList {
   genres: Genre[];
 }
 
+export interface Slide {
+  id: number;
+  overview: string;
+  vote_average: number;
+  title: string;
+  backdrop_path: string;
+}
+
 export interface SearchResult {
   movies: BaseMovie[] | null;
   tv: BaseTv[] | null;
 }
-
 export interface MovieList {
   genres: Genre[];
   movies: BaseMovie[];
@@ -73,11 +81,7 @@ export interface pageInfo {
   total_results: number;
   loading: boolean;
 }
-
-export interface Slide {
-  id: number;
-  overview: string;
-  vote_average: number;
-  title: string;
-  backdrop_path: string;
+export interface MediaItems {
+  Movie: MovieItem;
+  tvSeries: TvSeriesItem;
 }

@@ -52,7 +52,7 @@
           <router-link
             v-slot="{ href, navigate }"
             custom
-            :to="{ name: 'Media', params: { id: slide.id } }"
+            :to="{ name: 'media', params: { id: slide.id, media: $route.name } }"
           >
             <button
               :href="href"
@@ -109,8 +109,9 @@
         return str;
       };
       const computedBgClass = computed(() =>
-        route.name === 'Movie' ? 'bg-center' : 'bg-top'
+        route.name === 'movie' ? 'bg-center' : 'bg-top'
       );
+      
 
       return {
         imageUrl,

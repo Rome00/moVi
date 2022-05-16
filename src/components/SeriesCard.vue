@@ -28,7 +28,7 @@
         <router-link
           v-slot="{ navigate }"
           custom
-          :to="{ name: 'Media', params: { id: series.id } }"
+          :to="{ name: 'media', params: { id: series.id, media: $route.name } }"
         >
           <button
             class="bottom-2 right-6 float-right my-4 rounded-2xl px-6 py-1.5 capitalize text-indigo-400 outline-none ring-2 ring-indigo-400 transition-colors duration-300 hover:bg-indigo-400 hover:text-white xs:absolute md:relative md:right-0"

@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   mode: 'jit',
   content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
@@ -10,11 +12,6 @@ module.exports = {
       xl: '1280px',
       '2xl': '1536px',
     },
-    fontFamily: {
-      sans: ['Avenir', 'Helvetica', 'Arial', 'sans-serif'],
-      barlow: ['Barlow Condensed', 'sans-serif'],
-      raleway: ['Raleway', 'sans-serif'],
-    },
     extend: {
       colors: {
         primary: {
@@ -22,6 +19,11 @@ module.exports = {
           light: '#ec5e69',
           dark: '#b92b36',
         },
+      },
+      fontFamily: {
+        sans: ['Roboto', ...defaultTheme.fontFamily.sans],
+        barlow: ['Barlow Condensed', 'sans-serif'],
+        raleway: ['Raleway', 'sans-serif'],
       },
       animation: {
         'spin-slow': 'spin 0.5s linear infinite reverse',

@@ -4,14 +4,14 @@
   >
     <div class="flex flex-1 justify-between sm:hidden">
       <div
-        class="relative inline-flex cursor-pointer items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700"
+        class="relative inline-flex cursor-pointer items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:border-indigo-400"
         :class="[store.page === 1 ? 'opacity-40' : 'hover:bg-gray-50']"
         @click="prevPage"
       >
         Previous
       </div>
       <div
-        class="relative ml-3 inline-flex cursor-pointer items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+        class="relative ml-3 inline-flex cursor-pointer items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:border-indigo-400 hover:bg-gray-50"
         :class="{ 'hover:bg-gray-50': store.page === 1 }"
         @click="nextPage"
       >

@@ -83,7 +83,7 @@ interface Credits {
   crew: Crew[];
 }
 
-export interface TvRootObject {
+export interface TvSeriesItem {
   adult: boolean;
   backdrop_path: string;
   created_by: CreatedBy[];
