@@ -52,6 +52,7 @@ export const MediaStore = defineStore('MediaStore', {
     // return array of joined directors & writers of the movie/tv series
     getCrew(): Crew[] {
       const crew = this.Movie?.credits.crew ?? this.tvSeries?.credits.crew;
+
       const directors = crew?.filter((person) => person.job === 'Director');
       const writers = crew?.filter(
         (person) => person.job === 'Screenplay' || person.job === 'Novel'
@@ -68,7 +69,7 @@ export const MediaStore = defineStore('MediaStore', {
     // get media language
     getLanguage: (state): string =>
       new Intl.DisplayNames(['en'], { type: 'language' }).of(
-        state.Movie?.original_language ?? state.tvSeries.original_language
+        state.Movie?.original_language ?? state.tvSeries?.original_language
       ),
     // get media images
     getImages: (state): Media[] =>
@@ -77,6 +78,25 @@ export const MediaStore = defineStore('MediaStore', {
     // nnetwork
     getNetwork: (state): ProductionNetwork =>
       state.Movie?.production_companies[0] ?? state.tvSeries.networks[0],
+    firstAir(): string {
+      const air = new Date(this.tvSeries.first_air_date);
+      return `${air.getDay() + 1}-${air.getMonth()}-${air.getFullYear()}`;
+    },
+    lastAir(): string {
+      const air = new Date(this.tvSeries.last_air_date);
+      return `${air.getDay() + 1}-${air.getMonth()}-${air.getFullYear()}`;
+    },
+    ratingAverage(): number {
+      return this.tvSeries?.vote_average ?? this.Movie.vote_average;
+    },
+    budget: (state): string =>
+      Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+        state.Movie?.budget
+      ),
+    revenue: (state): string =>
+      Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+        state.Movie?.revenue
+      ),
   },
   actions: {
     async loadMediaInfo(payload: MediaPayload) {

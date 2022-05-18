@@ -12,15 +12,18 @@ export const MovieStore = defineStore('MovieStore', {
   getters: {},
   actions: {
     async getGenres() {
-      await axios
-        .get(
-          import.meta.env.VITE_API_BASE_URL +
-            'genre/movie/list?' +
-            import.meta.env.VITE_API_KEY
-        )
-        .then((result) => {
-          this.genres = result.data.genres;
-        });
+      return new Promise((res) => {
+        axios
+          .get(
+            import.meta.env.VITE_API_BASE_URL +
+              'genre/movie/list?' +
+              import.meta.env.VITE_API_KEY
+          )
+          .then((result) => {
+            this.genres = result.data.genres;
+            res(true);
+          });
+      });
     },
     async getMovies(page: number) {
       const pageInfo = pagination();

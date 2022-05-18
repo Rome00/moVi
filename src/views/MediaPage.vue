@@ -32,7 +32,7 @@
                     {{ genre.name }}
                   </span>
                 </span>
-                <span id="runTime" class="before:px-2 before:content-['\2022']">
+                <span id="runTime" class="">
                   {{ store.runTime }}
                 </span>
               </div>
@@ -52,6 +52,15 @@
                     <div class="text-center text-sm">{{ person.job }}</div>
                   </div>
                 </div>
+                <div v-if="store.tvSeries" class="flex items-center">
+                  <div class="font-raleway capitalize">
+                    Created By:
+                    <span class="font-medium italic">
+                      {{ store.tvSeries.created_by[0].name }}
+                    </span>
+                  </div>
+                </div>
+                <RatingStar class="mt-4" size="w-6 h-6" :rating="store.ratingAverage" />
               </div>
             </div>
           </div>
@@ -62,7 +71,7 @@
       <div class="flex flex-col md:flex-row">
         <div class="order-2 flex flex-col md:order-1 md:w-[calc(100%-200px)]">
           <h3
-            class="mb-6 bg-gradient-to-r from-primary-default via-indigo-500 to-indigo-400 bg-clip-text text-xl font-medium text-transparent"
+            class="mb-6 bg-gradient-to-r from-primary-default via-indigo-500 bg-clip-text text-xl font-medium text-transparent"
           >
             Top Billed Cast
           </h3>
@@ -102,24 +111,126 @@
           </div>
         </div>
         <aside
-          class="relative order-1 mb-6 flex min-w-[200px] flex-col space-y-4 bg-gradient-to-r from-zinc-500/5 via-transparent to-transparent py-5 pl-5 md:order-2"
+          class="relative order-1 mb-6 flex min-w-[200px] flex-col space-y-4 bg-gradient-to-r from-zinc-500/5 via-transparent to-transparent py-5 pl-5 font-raleway md:order-2"
         >
           <div class="flex flex-col">
             <span
-              class="bg-gradient-to-r from-primary-default via-primary-light to-indigo-400 bg-clip-text text-lg font-bold text-transparent"
+              class="bg-gradient-to-r from-primary-light via-rose-400 to-indigo-400 bg-clip-text text-lg font-bold capitalize text-transparent"
             >
               Status:
             </span>
-            <span class="text-base">{{ store.getStatus }}</span>
+            <span
+              class="text-base"
+              :class="[
+                store.getStatus === 'Released'
+                  ? 'font-font-semibold text-teal-600'
+                  : 'font-medium text-black',
+                store.getStatus === 'Ended'
+                  ? 'font-semibold italic text-red-600'
+                  : 'font-semibold text-amber-500',
+              ]"
+            >
+              {{ store.getStatus }}
+            </span>
           </div>
           <div class="flex flex-col">
             <span
-              class="bg-gradient-to-r from-primary-default via-primary-light to-indigo-400 bg-clip-text text-lg font-bold text-transparent"
+              class="bg-gradient-to-r from-primary-light via-rose-400 to-indigo-400 bg-clip-text text-lg font-bold capitalize text-transparent"
             >
               Original Language:
             </span>
-            <span class="text-base">{{ store.getLanguage }}</span>
+            <span v-if="store.getLanguage" class="text-base font-medium">
+              {{ store.getLanguage }}
+            </span>
           </div>
+          <template v-if="store.tvSeries">
+            <div class="flex flex-col">
+              <span
+                class="bg-gradient-to-r from-primary-light via-rose-400 to-indigo-400 bg-clip-text text-lg font-bold capitalize text-transparent"
+              >
+                first air date:
+              </span>
+              <span class="text-base font-medium">{{ store.firstAir }}</span>
+            </div>
+            <div class="flex flex-col">
+              <span
+                class="bg-gradient-to-r from-primary-light via-rose-400 to-indigo-400 bg-clip-text text-lg font-bold capitalize text-transparent"
+              >
+                Last air date:
+              </span>
+              <span class="text-base font-medium">{{ store.firstAir }}</span>
+            </div>
+            <div class="flex flex-col">
+              <span
+                class="bg-gradient-to-r from-primary-light via-rose-400 to-indigo-400 bg-clip-text text-lg font-bold capitalize text-transparent"
+              >
+                number of series:
+              </span>
+              <span class="text-base font-medium">
+                {{ store.tvSeries.number_of_episodes }}
+              </span>
+            </div>
+            <div class="flex flex-col">
+              <span
+                class="bg-gradient-to-r from-primary-light via-rose-400 to-indigo-400 bg-clip-text text-lg font-bold capitalize text-transparent"
+              >
+                Networks
+              </span>
+              <ul class="space-y-2 text-base">
+                <li
+                  v-for="network in store.tvSeries.networks"
+                  :key="network.id"
+                  class="mt-3 flex items-center"
+                >
+                  <figure class="inline-flex max-w-[64px]">
+                    <img
+                      class="h-auto w-full"
+                      :src="imageUrl + '/w154' + network.logo_path"
+                    />
+                  </figure>
+                </li>
+              </ul>
+            </div>
+          </template>
+          <template v-else>
+            <div class="flex flex-col">
+              <span
+                class="bg-gradient-to-r from-primary-light via-rose-400 to-indigo-400 bg-clip-text text-lg font-bold capitalize text-transparent"
+              >
+                budget:
+              </span>
+              <span class="text-base font-medium">{{ store.budget }}</span>
+            </div>
+            <div class="flex flex-col">
+              <span
+                class="bg-gradient-to-r from-primary-light via-rose-400 to-indigo-400 bg-clip-text text-lg font-bold capitalize text-transparent"
+              >
+                revenue:
+              </span>
+              <span class="text-base font-medium">{{ store.revenue }}</span>
+            </div>
+            <div class="flex flex-col">
+              <span
+                class="bg-gradient-to-r from-primary-light via-rose-400 to-indigo-400 bg-clip-text text-lg font-bold capitalize text-transparent"
+              >
+                studios:
+              </span>
+              <ul class="flex flex-wrap text-base">
+                <li
+                  v-for="company in store.Movie.production_companies"
+                  :key="company.id"
+                  class="mt-4 flex items-center"
+                >
+                  <figure v-if="company.logo_path" class="mr-3 inline-flex max-w-[84px]">
+                    <img
+                      class="h-auto w-full"
+                      :src="imageUrl + '/w154' + company.logo_path"
+                    />
+                  </figure>
+                </li>
+              </ul>
+            </div>
+          </template>
         </aside>
       </div>
     </section>
@@ -130,6 +241,7 @@
   import { useRoute } from 'vue-router';
   import { MediaStore } from '@/store/Media';
   import { computed } from 'vue';
+  import RatingStar from '@/components/RatingStar.vue';
 
   const route = useRoute();
   const store = MediaStore();

@@ -4,7 +4,7 @@
       v-if="store.movies"
       :indicators="width > 640"
       :movies="store.movies.slice(0, 10)"
-      height="h-[450px]"
+      height="h-[450px] 2xl:h-[600px]"
     />
     <div class="h-full w-full py-10">
       <div class="container mx-auto px-8 xs:max-w-full md:container">
@@ -35,8 +35,10 @@
   const store = MovieStore();
   const pageInfo = pagination();
 
-  store.getGenres();
-  store.getMovies(pageInfo.page);
+  // await all promises
+  store.getGenres().then((res) => {
+    if (res) store.getMovies(pageInfo.page);
+  });
 
   const { width } = mediaSize();
 

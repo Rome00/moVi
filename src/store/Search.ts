@@ -10,8 +10,8 @@ interface SearchParams {
 export const searchStore = defineStore('SearchData', {
   state: () =>
     ({
-      movies: null,
-      tv: null,
+      movies: [],
+      tv: [],
     } as SearchResult),
   getters: {},
   actions: {
@@ -24,12 +24,24 @@ export const searchStore = defineStore('SearchData', {
             type +
             import.meta.env.VITE_API_KEY +
             '&query=' +
-            searchKey
+            searchKey +
+            '&language=en-US&page=1&include_adult=false'
         )
         .then((result) => {
-          const dataType = type.split('?')[0];
+          this.movies = [];
+          this.tv = [];
 
-          dataType === 'movie'
+          if (type === 'media') {
+            result.data.results.filter((item: any) => {
+              if (item.media_type === 'tv') {
+                this.tv.push(item);
+              } else {
+                this.movies.push(item);
+              }
+            });
+          }
+
+          type === 'movie'
             ? (this.movies = result.data.results)
             : (this.tv = result.data.results);
         });

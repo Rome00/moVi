@@ -62,9 +62,9 @@
 
   const store = MovieStore();
 
-  const genreNames = (id: number): string => {
+  const genreNames = (id: number) => {
     return store.genres.find((x: Genre) => x.id === id)?.name;
-  };
+  }
 
   const truncate = (str: string, maxLength: number): string => {
     if (str.length > maxLength) {

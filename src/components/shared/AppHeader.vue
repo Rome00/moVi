@@ -1,11 +1,14 @@
 <template>
   <header class="flex w-full bg-black shadow-md">
     <nav class="relative flex h-20 w-full items-center justify-between px-10">
-      <router-link v-slot="{ navigate }" class="flex h-full items-center" to="/">
-        <figure class="flex h-full w-16 items-center" @click="navigate">
+      <button
+        class="flex h-full items-center"
+        @click="loadRoute($route.params.media as string)"
+      >
+        <figure class="flex h-full w-16 items-center">
           <img class="h-auto w-full" src="@/assets/logo.png" alt="moVi" />
         </figure>
-      </router-link>
+      </button>
       <div class="relative hidden max-w-[640px] md:block md:w-[440px] lg:w-[640px]">
         <input
           v-model="search"
@@ -33,7 +36,7 @@
               </span>
             </div>
           </template>
-          <template v-else>
+          <template v-if="tvList">
             <div
               v-for="item in tvList"
               :key="item.id"
@@ -92,7 +95,7 @@
                   </span>
                 </div>
               </template>
-              <template v-else>
+              <template v-if="tvList">
                 <div
                   v-for="item in tvList"
                   :key="item.id"
@@ -109,7 +112,7 @@
             </div>
             <button
               class="flex w-full justify-center py-4 text-center font-medium transition-colors duration-200 hover:bg-slate-600/50 hover:text-primary-light"
-              @click="loadRoute('/')"
+              @click="loadRoute('movie')"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -131,7 +134,7 @@
             </button>
             <button
               class="flex w-full justify-center py-4 text-center font-medium transition-colors duration-200 hover:bg-slate-600/50 hover:text-primary-light"
-              @click="loadRoute('/series')"
+              @click="loadRoute('tv')"
             >
               <svg
                 version="1.1"
@@ -197,7 +200,13 @@
 
   const type = computed(() => {
     const { name } = route;
-    return name === 'movie' ? 'movie' : 'tv';
+    switch (name) {
+      case 'media':
+        return 'multi?';
+      case 'movie':
+        return 'movie?';
+    }
+    return 'tv?';
   });
 
   const movieList = computed(() => {
@@ -214,9 +223,10 @@
   }
 
   function loadRoute(route: string) {
-    console.log(route);
-    router.push({ path: route });
+    router.push({ name: route });
     activeMenu.value = false;
+    store.movies = null;
+    store.tv = null;
   }
 
   function navigateToMedia(id: number, name: string) {
@@ -230,10 +240,9 @@
   watch(search, (value) => {
     if (value.length > 2) {
       setTimeout(() => {
-        const typeQuery = type.value + '?';
         const data = {
           searchKey: value,
-          type: typeQuery,
+          type: type.value,
         };
         store.search(data);
       }, 1000);

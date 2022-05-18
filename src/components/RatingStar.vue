@@ -1,13 +1,14 @@
 <template>
-  <ul class="flex justify-start mt-3">
-    <li v-for="(star, i) in stars" :key="i">
+  <ul class="mt-3 flex justify-start">
+    <li v-for="(str, i) in stars" :key="i">
       <svg
-        v-if="star.filled"
+        v-if="str.filled"
         aria-hidden="true"
         focusable="false"
         data-prefix="fas"
         data-icon="star"
-        class="mr-1 w-4 text-yellow-500"
+        class="mr-1 text-yellow-500"
+        :class="size"
         role="img"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 576 512"
@@ -23,7 +24,8 @@
         focusable="false"
         data-prefix="fas"
         data-icon="star"
-        class="mr-1 w-4 text-yellow-500"
+        class="mr-1 text-yellow-500"
+        :class="size"
         role="img"
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 576 512"
@@ -44,6 +46,10 @@
     rating: {
       type: Number,
       default: 0,
+    },
+    size: {
+      type: String,
+      default: 'w-4 h-4',
     },
   });
 
