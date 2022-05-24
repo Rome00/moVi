@@ -7,6 +7,7 @@ export default ({ mode }) => {
   // now you can access config with process.env.{configName}
 
   return defineConfig({
+    base: '/moVi/',
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src'),
