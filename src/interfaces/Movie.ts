@@ -5,6 +5,7 @@ import {
   SpokenLanguage,
   Crew,
   Images,
+  Video,
 } from './Root';
 
 export interface BaseMovie {
@@ -67,6 +68,9 @@ export interface ReleaseDate {
   release_date: string;
   type: number;
 }
+interface Videos {
+  results: Video[];
+}
 
 export interface MovieItem {
   adult: boolean;
@@ -97,4 +101,5 @@ export interface MovieItem {
   release_dates: ReleaseDates;
   credits: Credits;
   images: Images;
+  videos: Videos;
 }

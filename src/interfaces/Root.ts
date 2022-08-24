@@ -24,7 +24,6 @@ export interface SearchMediaItem {
   video?: boolean;
 }
 
-
 export interface ProductionNetwork {
   id: number;
   name: string;
@@ -66,6 +65,18 @@ export interface Images {
   backdrops: Media[];
   logos: Media[];
   posters: Media[];
+}
+export interface Video {
+  iso_639_1: string;
+  iso_3166_1: string;
+  name: string;
+  key: string;
+  site: string;
+  size: number;
+  type: string;
+  official: boolean;
+  published_at: string;
+  id: string;
 }
 
 /* Defining the shape of the GenreList data that will be returned from the API. */

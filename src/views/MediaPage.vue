@@ -60,7 +60,12 @@
                     </span>
                   </div>
                 </div>
-                <RatingStar class="mt-4" size="w-6 h-6" :rating="store.ratingAverage" />
+                <div class="mt-8 flex items-center justify-start space-x-2">
+                  <RatingStar size="w-6 h-6" :rating="store.ratingAverage" />
+                  <span class="mt-1 font-raleway text-lg font-medium">
+                    {{ store.ratingAverage }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -100,13 +105,54 @@
               Media
             </h3>
             <div class="flex overflow-x-auto">
-              <figure
+              <div
                 v-for="(image, i) in store.getImages"
                 :key="i"
-                class="mb-3 w-80 min-w-[300px] px-0.5"
+                class="flex-shrink-0"
               >
-                <img :src="imageUrl + 'w300' + image.file_path" alt="" />
-              </figure>
+                <img
+                  class="aspect-[2/3] w-full px-1 first:pl-0 object-cover"
+                  :src="imageUrl + 'w300' + image.file_path"
+                  alt=""
+                />
+              </div>
+            </div>
+          </div>
+          <div class="mt-8 mb-20 border-t border-gray-300">
+            <h3
+              class="mt-8 mb-6 bg-gradient-to-r from-primary-default via-indigo-500 to-indigo-400 bg-clip-text text-xl font-medium text-transparent"
+            >
+              Trailers
+            </h3>
+            <div v-if="store.trailers" class="flex space-x-4 overflow-x-auto">
+              <Modal
+                v-for="trailer in store.trailers"
+                :key="trailer.id"
+                :open="activeModal === trailer.id"
+                @close="activeModal = ''"
+              >
+                <figure class="cursor-pointer relative" @click="activeModal = trailer.id">
+                  <img
+                    class="aspect-video object-cover w-full rounded-md"
+                    :src="'https://img.youtube.com/vi/' + trailer.key + '/hqdefault.jpg'"
+                    :alt="trailer.name"
+                  />
+                  <div class="absolute inset-0 bg-transparent hover:bg-primary-default/10"></div>
+                </figure>
+                <template #content>
+                  <iframe
+                    :id="trailer.id"
+                    class="aspect-video w-full object-cover outline-none"
+                    type="text/html"
+                    :src="
+                      'https://www.youtube.com/embed/' +
+                      trailer.key +
+                      '?autoplay=1&controls=0&iv_load_policy=3&quality=high'
+                    "
+                    frameborder="0"
+                  ></iframe>
+                </template>
+              </Modal>
             </div>
           </div>
         </div>
@@ -238,10 +284,13 @@
 </template>
 
 <script setup lang="ts">
-  import { useRoute } from 'vue-router';
-  import { MediaStore } from '@/store/Media';
-  import { computed } from 'vue';
-  import RatingStar from '@/components/RatingStar.vue';
+  import Modal from '@/components/AppModal.vue';
+import RatingStar from '@/components/RatingStar.vue';
+import { MediaStore } from '@/store/Media';
+import { computed, ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+  const activeModal = ref('');
 
   const route = useRoute();
   const store = MediaStore();
@@ -264,4 +313,5 @@
 
   // computed fn that returns image url
   const imageUrl = computed(() => import.meta.env.VITE_IMAGE_URL);
+  
 </script>

@@ -1,6 +1,20 @@
+import { pagination } from '@/store/PageInfo';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import type { RouteRecordRaw } from 'vue-router';
 import { createRouter, createWebHistory } from 'vue-router';
-import { pagination } from '@/store/PageInfo';
+
+const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const removeListener = onAuthStateChanged(
+      getAuth(),
+      (user) => {
+        removeListener();
+        resolve(user);
+      },
+      reject
+    );
+  });
+};
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -12,12 +26,31 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/series',
     name: 'tv',
-    component: () => import(/* webpackChunkName: "home" */ '../views/SeriesPage.vue'),
+    component: () => import(/* webpackChunkName: "series" */ '../views/SeriesPage.vue'),
   },
   {
     path: '/media/:media/:id',
     name: 'media',
-    component: () => import(/* webpackChunkName: "home" */ '../views/MediaPage.vue'),
+    component: () => import(/* webpackChunkName: "media" */ '../views/MediaPage.vue'),
+  },
+  {
+    path: '/auth',
+    name: 'auth',
+    component: () => import(/* webpackChunkName: "auth" */ '../views/Auth.vue'),
+  },
+  {
+    path: '/user',
+    name: 'user',
+    component: () => import(/* webpackChunkName: "user" */ '../views/UserPage.vue'),
+    beforeEnter: async (to, from, next) => {
+      console.log(await getCurrentUser());
+
+      if (await getCurrentUser()) {
+        next();
+      } else {
+        next({ name: 'movie' });
+      }
+    },
   },
 ];
 

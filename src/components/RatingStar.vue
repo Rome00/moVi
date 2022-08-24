@@ -1,5 +1,5 @@
 <template>
-  <ul class="mt-3 flex justify-start">
+  <ul class="flex justify-start">
     <li v-for="(str, i) in stars" :key="i">
       <svg
         v-if="str.filled"

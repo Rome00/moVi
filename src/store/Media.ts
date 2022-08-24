@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import axios from 'axios';
 import { MovieCast, ContentResult } from '@/interfaces/Movie';
 import { TvCast, ContentRating } from '@/interfaces/Tv';
-import { MediaItems, Crew, Media, ProductionNetwork } from '@/interfaces/Root';
+import { MediaItems, Crew, Media, ProductionNetwork, Video } from '@/interfaces/Root';
 import { pagination } from './PageInfo';
 
 interface MediaPayload {
@@ -31,13 +31,6 @@ export const MediaStore = defineStore('MediaStore', {
           .rating;
       }
       return certificate;
-      /* const certificate: (ContentRating | ContentResult)[] =
-        this.Movie?.release_dates.results ?? this.tvSeries.content_ratings.results;
-      const filteredCertificate: (ContentResult | ContentRating)[] = certificate.filter(
-        (cert) => cert.iso_3166_1 === 'US'
-      );
-      //NOTE TS gives error not sure why cannot type it!!!
-      return filteredCertificate.release_dates[0].certification ?? certificate.reting; */
     },
     // return release date of the movie/tv series in dd-mm-yyyy format
     releaseDate(): string {
@@ -73,9 +66,11 @@ export const MediaStore = defineStore('MediaStore', {
       ),
     // get media images
     getImages: (state): Media[] =>
-      state.Movie?.images.backdrops.slice(0, 20) ??
-      state.tvSeries.images.backdrops.slice(0, 20),
-    // nnetwork
+      state.Movie?.images.posters.filter((img) => img.iso_639_1 === 'en').slice(0, 20) ??
+      state.tvSeries.images.backdrops
+        .filter((img) => img.iso_639_1 === 'en')
+        .slice(0, 20),
+    // network
     getNetwork: (state): ProductionNetwork =>
       state.Movie?.production_companies[0] ?? state.tvSeries.networks[0],
     firstAir(): string {
@@ -97,6 +92,10 @@ export const MediaStore = defineStore('MediaStore', {
       Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
         state.Movie?.revenue
       ),
+    trailers: (state): Video[] =>
+      state.Movie?.videos.results.filter(
+        (video): boolean => video.official && video.type === 'Trailer'
+      ),
   },
   actions: {
     async loadMediaInfo(payload: MediaPayload) {
@@ -115,7 +114,7 @@ export const MediaStore = defineStore('MediaStore', {
             import.meta.env.VITE_API_KEY +
             '&append_to_response=' +
             certificateQuery +
-            ',credits,images'
+            ',credits,images,videos'
         )
         .then((result) => {
           type === 'movie' ? (this.Movie = result.data) : (this.tvSeries = result.data);
