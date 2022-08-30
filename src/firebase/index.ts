@@ -1,5 +1,10 @@
 import { FirebaseApp, initializeApp } from 'firebase/app';
-import { Auth, debugErrorMap, initializeAuth } from 'firebase/auth';
+import {
+  Auth,
+  browserPopupRedirectResolver,
+  debugErrorMap,
+  initializeAuth,
+} from 'firebase/auth';
 import { Firestore, getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -11,11 +16,12 @@ const firebaseConfig = {
   appId: '1:1062941026327:web:ac36d48d1b6801fe4ed452',
   measurementId: 'G-NZE291TMGG',
 };
-
 const app: FirebaseApp = initializeApp(firebaseConfig);
 
-const auth: Auth = initializeAuth(app, { errorMap: debugErrorMap });
-//const auth: Auth = getAuth(app);
+const auth: Auth = initializeAuth(app, {
+  errorMap: debugErrorMap,
+  popupRedirectResolver: browserPopupRedirectResolver,
+});
 
 const db: Firestore = getFirestore(app);
 

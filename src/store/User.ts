@@ -1,15 +1,18 @@
 import { auth, db } from '@/firebase';
 import { logIn, user, UserData } from '@/interfaces/User';
+import router from '@/router';
 // import firebase FirebaseError as types
 import {
   AuthError,
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   signInWithPopup,
+  signOut,
   updateProfile,
 } from 'firebase/auth';
-import { collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { notify } from 'notiwind';
 import { defineStore } from 'pinia';
 
@@ -21,34 +24,36 @@ function getRefinedFirebaseAuthErrorMessage(errorMesssage: string): string {
   return errorMesssage.replace('Firebase: ', '').replace(/\(auth.*\)\.?/, '');
 }
 
-export const useUserStore = defineStore('user store', {
+export const useUserStore = defineStore('userStore', {
   state: () =>
     ({
-      user: {},
+      user: {
+        userInfo: null,
+        fav_movies: null,
+      },
       isAuthenticated: false,
     } as UserData),
   getters: {},
   actions: {
     async register(userData: user) {
       try {
-        const result = await createUserWithEmailAndPassword(
-          auth,
-          userData.email,
-          userData.password
-        );
-        const newUser = await updateProfile(auth.currentUser, {
+        await createUserWithEmailAndPassword(auth, userData.email, userData.password);
+        await updateProfile(auth.currentUser, {
           displayName: userData.userName,
         });
-        console.log(newUser, auth.currentUser);
-
-        this.user.userInfo = auth.currentUser;
+        const user = auth.currentUser;
+        this.user.userInfo = user;
+        const userRef = doc(db, 'users', user.uid);
+        await setDoc(userRef, { fav_movies: [] });
+        this.user.userInfo = user;
+        this.isAuthenticated = true;
         notify(
           {
             group: 'notify',
             title: 'success',
-            text: 'User created',
+            text: 'User created successfully',
           },
-          4000
+          2000
         ); // 4s
       } catch (error) {
         if (authError(error)) {
@@ -67,8 +72,24 @@ export const useUserStore = defineStore('user store', {
     async login(details: logIn) {
       const { email, password } = details;
       try {
-        const result = await signInWithEmailAndPassword(auth, email, password);
-        console.log(result);
+        await signInWithEmailAndPassword(auth, email, password);
+        const user = auth.currentUser;
+        this.user.userInfo = user;
+        const userRef = doc(db, 'users', user.uid);
+        const userFavorites = await getDoc(userRef);
+        if (userFavorites) {
+          this.user.fav_movies = userFavorites.data;
+        }
+        this.isAuthenticated = true;
+        router.push({ name: 'movie' });
+        notify(
+          {
+            group: 'notify',
+            title: 'success',
+            text: 'Logged in successfully',
+          },
+          2000
+        ); // 4s
       } catch (error) {
         if (authError(error)) {
           notify(
@@ -81,14 +102,34 @@ export const useUserStore = defineStore('user store', {
           ); // 4s
         }
       }
+    },
+    async addFavItem(data) {
+      try {
+        const docRef = await setDoc(doc(db, 'users', this.user.userInfo.uid), {
+          fav_movies: [],
+        });
+      } catch (error) {}
     },
     async googleLogin() {
       const provider = new GoogleAuthProvider();
       try {
         const result = await signInWithPopup(auth, provider);
+        const userRef = doc(db, 'users', result.user.uid);
+        const docSnap = await getDoc(userRef);
+        if (docSnap.exists()) {
+          this.user.fav_movies = docSnap.data().fav_movies;
+          console.log('Document data:', docSnap.data());
+        } else {
+          await setDoc(userRef, { fav_movies: [] });
+          console.log('No such document!');
+        }
         this.user.userInfo = result.user;
+        this.isAuthenticated = true;
+        router.push({ name: 'movie' });
       } catch (error) {
         if (authError(error)) {
+          console.log(error);
+
           notify(
             {
               group: 'notify',
@@ -100,15 +141,33 @@ export const useUserStore = defineStore('user store', {
         }
       }
     },
-    async authListener() {
-      try {
-        auth.onAuthStateChanged(async (user) => {
-          if (user) {
-            this.user.userInfo = user;
-            const querySnapshot = await getDocs(collection(db, 'users'));
-            console.log(db);
+    async fetchUser() {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          this.user.userInfo = user;
+          this.isAuthenticated = true;
+          if (router.isReady() && router.currentRoute.value.name === 'auth') {
+            router.push('movie');
           }
-        });
+        } else {
+          this.user.userInfo = null;
+          this.isAuthenticated = false;
+        }
+      });
+    },
+    async logout() {
+      try {
+        await signOut(auth);
+        this.user.userInfo = null;
+        this.isAuthenticated = false;
+        notify(
+          {
+            group: 'notify',
+            title: 'success',
+            text: 'Logged out successfully',
+          },
+          2000
+        ); // 4s
       } catch (error) {
         if (authError(error)) {
           notify(
@@ -122,6 +181,5 @@ export const useUserStore = defineStore('user store', {
         }
       }
     },
-    async logout() {},
   },
 });

@@ -1,5 +1,5 @@
 <template>
-  <NotificationGroup group="notify" position="bottom">
+  <NotificationGroup group="notify" position="top">
     <div
       class="pointer-events-none fixed inset-x-0 bottom-0 flex items-start justify-end p-6 px-4 py-6"
     >
@@ -21,7 +21,7 @@
             class="mx-auto mt-4 flex w-full max-w-sm overflow-hidden rounded-lg bg-white shadow-md"
           >
             <div
-              class="flex justify-center w-12 items-center"
+              class="flex w-12 items-center justify-center"
               :class="notification.title === 'success' ? 'bg-green-500' : 'bg-red-500'"
             >
               <svg

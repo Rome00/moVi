@@ -1,6 +1,11 @@
+import { auth } from '@/firebase';
 import { pagination } from '@/store/PageInfo';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import type { RouteRecordRaw } from 'vue-router';
+import type {
+  NavigationGuardNext,
+  RouteLocationNormalized,
+  RouteRecordRaw,
+} from 'vue-router';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const getCurrentUser = () => {
@@ -37,20 +42,16 @@ const routes: Array<RouteRecordRaw> = [
     path: '/auth',
     name: 'auth',
     component: () => import(/* webpackChunkName: "auth" */ '../views/Auth.vue'),
+    beforeEnter: userGuard,
   },
   {
     path: '/user',
     name: 'user',
-    component: () => import(/* webpackChunkName: "user" */ '../views/UserPage.vue'),
-    beforeEnter: async (to, from, next) => {
-      console.log(await getCurrentUser());
-
-      if (await getCurrentUser()) {
-        next();
-      } else {
-        next({ name: 'movie' });
-      }
+    meta: {
+      requiresAuth: true,
     },
+    component: () => import(/* webpackChunkName: "user" */ '../views/UserPage.vue'),
+    beforeEnter: userGuard,
   },
 ];
 
@@ -66,11 +67,26 @@ router.beforeEach((to, from, next) => {
   if (to.query.page && to.name !== 'media') {
     pageInfo.page = parseInt(to.query.page as string);
     next();
-  } else if (to.name !== 'media') {
+  } else if (to.name !== 'media' && to.name === 'movie') {
     next({ name: to.name, query: { page: 1 } });
   } else {
     next();
   }
 });
+
+async function userGuard(
+  to: RouteLocationNormalized,
+  from: RouteLocationNormalized,
+  next: NavigationGuardNext
+) {
+  if (to.path === 'auth' && auth.currentUser) {
+    next({ name: 'movie' });
+  }
+  if (to.matched.some((record) => record.meta.requiresAuth) && !auth.currentUser) {
+    next({ name: 'auth' });
+  } else {
+    next();
+  }
+}
 
 export default router;

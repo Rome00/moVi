@@ -162,41 +162,100 @@
                 tv show
               </span>
             </button>
+            <button
+              v-if="isAuthenticated"
+              class="flex pl-2 font-raleway text-sm font-bold uppercase text-primary-light hover:text-primary-default md:text-base"
+              @click="logOut"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                class="h-6 w-6"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm5.03 4.72a.75.75 0 010 1.06l-1.72 1.72h10.94a.75.75 0 010 1.5H10.81l1.72 1.72a.75.75 0 11-1.06 1.06l-3-3a.75.75 0 010-1.06l3-3a.75.75 0 011.06 0z"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span class="pl-2">Log out</span>
+            </button>
+            <router-link
+              v-if="!isAuthenticated"
+              class="flex pl-2 font-raleway text-sm font-bold uppercase text-primary-light hover:text-primary-default md:text-base"
+              :to="{ name: 'auth' }"yarn dev
+              @click="activeMenu = false"
+            >
+              <span class="rotate-180">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="h-6 w-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
+                  />
+                </svg>
+              </span>
+
+              <span class="pl-2">Log in</span>
+            </router-link>
           </div>
         </div>
       </TransitionRoot>
-      <button
-        class="icon relative m-2.5 inline h-[30px] w-[30px] cursor-pointer outline-none transition-all duration-100"
-        :class="{ open: activeMenu }"
-        @click="toggleMenu"
-      >
-        <span class="dots"></span>
-        <span class="dots"></span>
-        <span class="dots"></span>
-        <span class="dots"></span>
-        <span class="dots"></span>
-        <span class="dots"></span>
-        <span class="dots"></span>
-        <span class="dots"></span>
-        <span class="dots"></span>
-      </button>
+      <div class="flex items-center">
+        <div v-if="isAuthenticated" class="flex items-center space-x-1">
+          <figure class="h-6 w-6 overflow-hidden rounded-full">
+            <img class="h-full w-full" :src="userImg" />
+          </figure>
+          <router-link class="pr-3 capitalize text-white" to="user">
+            {{ userName }}
+          </router-link>
+        </div>
+        <button
+          class="icon relative m-2.5 inline h-[30px] w-[30px] cursor-pointer outline-none transition-all duration-100"
+          :class="{ open: activeMenu }"
+          @click="toggleMenu"
+        >
+          <span class="dots"></span>
+          <span class="dots"></span>
+          <span class="dots"></span>
+          <span class="dots"></span>
+          <span class="dots"></span>
+          <span class="dots"></span>
+          <span class="dots"></span>
+          <span class="dots"></span>
+          <span class="dots"></span>
+        </button>
+      </div>
     </nav>
   </header>
 </template>
 
 <script setup lang="ts">
+  import { searchStore } from '@/store/Search';
+  import { useUserStore } from '@/store/User';
+  import { TransitionRoot } from '@headlessui/vue';
   import { computed, ref, watch } from 'vue';
   import { useRoute, useRouter } from 'vue-router';
-  import { TransitionRoot } from '@headlessui/vue';
-  import { searchStore } from '@/store/Search';
 
   const store = searchStore();
+  const userStore = useUserStore();
   const route = useRoute();
   const router = useRouter();
 
   const activeMenu = ref(false);
   const search = ref('');
   const imgBaseUrl = computed(() => import.meta.env.VITE_IMAGE_URL + 'w92');
+  const isAuthenticated = computed(() => userStore.isAuthenticated);
+  const userName = computed(() => userStore.user.userInfo?.displayName);
+  const userImg = computed(() => userStore.user.userInfo?.photoURL);
 
   const type = computed(() => {
     const { name } = route;
@@ -208,13 +267,16 @@
     }
     return 'tv?';
   });
-
   const movieList = computed(() => {
     return store.movies;
   });
   const tvList = computed(() => {
     return store.tv;
   });
+
+  function logOut() {
+    userStore.logout();
+  }
 
   function toggleMenu() {
     activeMenu.value = !activeMenu.value;

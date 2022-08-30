@@ -1,11 +1,12 @@
 import { UserInfo } from 'firebase/auth';
-interface FavMovies {
+export interface FavMovies {
   id: number;
   title: string;
   genre_ids: number[];
   overview: string;
   poster_path: string;
   vote_average: number;
+  uid: string;
 }
 export interface logIn {
   email: string;
