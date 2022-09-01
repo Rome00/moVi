@@ -278,6 +278,7 @@
     userStore.logout();
   }
 
+  
   function toggleMenu() {
     activeMenu.value = !activeMenu.value;
     store.movies = null;

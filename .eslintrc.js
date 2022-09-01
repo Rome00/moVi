@@ -19,15 +19,15 @@ module.exports = {
     'plugin:jest/recommended',
     'prettier',
   ],
+  rules: {
+    'vue/multi-word-component-names': 0,
+  },
   overrides: [
     {
-      files: [
-        '**/__tests__/*.{j,t}s?(x)',
-        '**/tests/unit/**/*.spec.{j,t}s?(x)',
-      ],
+      files: ['**/__tests__/*.{j,t}s?(x)', '**/tests/unit/**/*.spec.{j,t}s?(x)'],
       env: {
         jest: true,
       },
     },
   ],
-}
+};
